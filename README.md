@@ -8,7 +8,9 @@ A weather app branded for Florida Atlantic University. It defaults to the FAU Bo
 - City search with autocomplete (Open-Meteo Geocoding API)
 - "My location" button (browser geolocation)
 - °F / °C toggle; your last city and unit are remembered
-- FAU Blue (#003366) and FAU Red (#CC0000) theme, dark mode, mobile layout
+- Welcome message for Nicolas with a greeting for the time of day and a weather tip
+- Four themes: System (follows your device), Light, White and Dark. Your choice is remembered
+- FAU Blue (#003366) and FAU Red (#CC0000) branding with the FAU owl logo, plus a mobile layout
 
 ## Files
 | File | Purpose |
@@ -16,8 +18,8 @@ A weather app branded for Florida Atlantic University. It defaults to the FAU Bo
 | `index.html` | Page markup |
 | `styles.css` | FAU theme |
 | `app.js` | Open-Meteo calls and rendering |
-| `assets/fau-logo.svg` | Logo (placeholder owl badge, see below) |
-| `assets/favicon.svg` | Browser tab icon |
+| `assets/fau-owl-logo.png` | FAU owl logo (transparent background) |
+| `assets/favicon.png`, `assets/apple-touch-icon.png` | Browser tab and iPhone/iPad home-screen icons |
 | `netlify.toml` | Netlify config (no build step, security headers) |
 
 ## Run locally
@@ -39,9 +41,7 @@ python3 -m http.server 8000
 1. Download or zip this folder.
 2. Go to https://app.netlify.com/drop and drop the folder onto the page.
 
-## Using the official FAU logo
-`assets/fau-logo.svg` is a custom owl badge in FAU colors, not the official logo. To use the real one:
-1. Download it from FAU's brand site (https://www.fau.edu/styleguide/).
-2. Save it as `assets/fau-logo.svg`. If it's a PNG, save it as `assets/fau-logo.png` and update the `<img>` in `index.html`.
+## Logo
+The FAU owl logo is a trademark of Florida Atlantic University. It's used here for a class project. Check FAU's brand guidelines (https://www.fau.edu/styleguide/) before you promote the site publicly.
 
-FAU's logos are trademarks. A class project is usually fine, but check FAU's brand guidelines before you make the site public or promote it.
+Built by Nicolas Munoz.

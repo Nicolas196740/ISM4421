@@ -55,6 +55,9 @@
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* ignore */ } },
   };
 
+  const USER_FIRST_NAME = "Nicolas";
+  const THEMES = ["system", "light", "white", "dark"];
+
   let unit = store.get("unit") === "celsius" ? "celsius" : "fahrenheit";
   let place = store.get("place") || FAU_BOCA;
 
@@ -99,6 +102,51 @@
       b.classList.toggle("active", on);
       b.setAttribute("aria-pressed", String(on));
     });
+  }
+
+  // ---------- Theme ----------
+  const themeSelect = $("theme-select");
+  function applyTheme(t) {
+    const theme = THEMES.includes(t) ? t : "system";
+    document.documentElement.dataset.theme = theme;
+    themeSelect.value = theme;
+    store.set("theme", theme);
+    const dark = theme === "dark" || (theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+    document.querySelector('meta[name="theme-color"]').content = theme === "white" ? "#ffffff" : dark ? "#0b1726" : "#003366";
+  }
+  themeSelect.addEventListener("change", () => applyTheme(themeSelect.value));
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => applyTheme(themeSelect.value));
+
+  // ---------- Welcome ----------
+  function greeting() {
+    const h = new Date().getHours();
+    if (h < 5) return "Up late";
+    if (h < 12) return "Good morning";
+    if (h < 17) return "Good afternoon";
+    return "Good evening";
+  }
+
+  function weatherTip(data) {
+    const c = data.current;
+    const d = data.daily;
+    const f = unit === "fahrenheit";
+    const temp = Math.round(c.temperature_2m);
+    const desc = wmo(c.weather_code, c.is_day).desc.toLowerCase();
+    const where = place.name === FAU_BOCA.name ? "at FAU" : place.name === "My location" ? "near you" : `in ${place.name}`;
+    const rain = d.precipitation_probability_max[0] ?? 0;
+    let tip;
+    if (c.weather_code >= 95) tip = "Thunderstorms around, so stay inside if you can.";
+    else if (rain >= 50) tip = "Grab an umbrella before you head to class.";
+    else if (c.apparent_temperature >= (f ? 95 : 35)) tip = "It's brutal out there. Stay hydrated.";
+    else if ((d.uv_index_max[0] ?? 0) >= 8) tip = "The UV is high today, so don't skip the sunscreen.";
+    else if (c.temperature_2m <= (f ? 60 : 15)) tip = "It's chilly for Florida. Bring a hoodie.";
+    else tip = "Great day to be an Owl!";
+    return `It's ${temp}° and ${desc} ${where}. ${tip}`;
+  }
+
+  function renderWelcome(data) {
+    $("welcome-title").textContent = `${greeting()}, ${USER_FIRST_NAME}!`;
+    $("welcome-tip").textContent = data ? weatherTip(data) : "Welcome to Owl Weather. Checking the skies…";
   }
 
   // ---------- API ----------
@@ -206,6 +254,7 @@
     try {
       const data = await fetchForecast(p);
       render(data);
+      renderWelcome(data);
       setStatus("");
       document.title = `${Math.round(data.current.temperature_2m)}° ${p.name} · FAU Owl Weather`;
     } catch (err) {
@@ -316,6 +365,8 @@
   );
 
   // ---------- Init ----------
+  applyTheme(store.get("theme"));
+  renderWelcome(null);
   updateUnitButtons();
   load(place);
 

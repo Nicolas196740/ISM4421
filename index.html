@@ -1,12 +1,20 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="system">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FAU Owl Weather</title>
   <meta name="description" content="Live weather for Boca Raton and anywhere else, powered by Open-Meteo. Go Owls!" />
   <meta name="theme-color" content="#003366" />
-  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <script>
+    // Apply the saved theme before the page paints to avoid a flash.
+    try {
+      var t = JSON.parse(localStorage.getItem("theme"));
+      if (["system", "light", "white", "dark"].indexOf(t) > -1) document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet" />
@@ -15,19 +23,36 @@
 <body>
   <header class="site-header">
     <div class="brand">
-      <img src="/assets/fau-logo.svg" alt="FAU logo" class="logo" width="56" height="56" />
+      <img src="/assets/fau-owl-logo.png" alt="FAU Owls logo" class="logo" width="480" height="273" />
       <div>
         <h1>Owl Weather</h1>
         <p class="tagline">Florida Atlantic University &middot; Boca Raton</p>
       </div>
     </div>
-    <div class="unit-toggle" role="group" aria-label="Temperature units">
-      <button type="button" data-unit="fahrenheit" class="active" aria-pressed="true">&deg;F</button>
-      <button type="button" data-unit="celsius" aria-pressed="false">&deg;C</button>
+    <div class="header-controls">
+      <label for="theme-select" class="sr-only">Theme</label>
+      <select id="theme-select" class="theme-select" title="Theme">
+        <option value="system">🖥️ System</option>
+        <option value="light">🌤️ Light</option>
+        <option value="white">⬜ White</option>
+        <option value="dark">🌙 Dark</option>
+      </select>
+      <div class="unit-toggle" role="group" aria-label="Temperature units">
+        <button type="button" data-unit="fahrenheit" class="active" aria-pressed="true">&deg;F</button>
+        <button type="button" data-unit="celsius" aria-pressed="false">&deg;C</button>
+      </div>
     </div>
   </header>
 
   <main class="container">
+    <section class="card welcome" aria-live="polite">
+      <span class="welcome-emoji" aria-hidden="true">🦉</span>
+      <div>
+        <h2 id="welcome-title">Welcome, Nicolas!</h2>
+        <p id="welcome-tip">Checking the skies over Boca…</p>
+      </div>
+    </section>
+
     <form id="search-form" class="search" autocomplete="off">
       <label for="search-input" class="sr-only">Search a city</label>
       <input id="search-input" type="search" placeholder="Search a city (e.g. Miami, Tampa)" />
@@ -75,7 +100,7 @@
 
   <footer class="site-footer">
     <p>Go Owls! 🦉 Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (CC BY 4.0).</p>
-    <p class="muted small">Student project. Not an official Florida Atlantic University website.</p>
+    <p class="muted small">Built by Nicolas Munoz &middot; Student project, not an official Florida Atlantic University website.</p>
   </footer>
 
   <script src="/app.js" defer></script>
